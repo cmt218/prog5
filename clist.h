@@ -13,6 +13,7 @@ using namespace std;
 
 /// TODO: complete this implementation of a thread-safe (concurrent) sorted
 /// linked list of integers
+//std::mutex list_mutex;
 class clist
 {
 	/// a Node consists of a value and a pointer to another node
@@ -23,22 +24,34 @@ class clist
 	};
 
 	/// The head of the list is referenced by this pointer
-	Node* head;
-	size_t size = 0;
+	mutable Node* head;
 	mutable std::mutex list_mutex;
+	mutable int size = 0;
+	//size_t size = 0;
+	//mutable std::mutex list_mutex;
 
 public:
+	//Node* head;
+	//size_t size = 0;
+	
 	clist(int)
 	: head(NULL)
 	{}
+	clist()
+	{
+		clist(0);
+	}
 
 	/// insert *key* into the linked list if it doesn't already exist; return
 	/// true if the key was added successfully.
-	bool insert(int key)
+	bool insert(int key) const
 	{
+		list_mutex.lock();
 		bool ret = false;
 		Node* toinsert = (Node*) malloc(sizeof(struct Node));
-		list_mutex.lock();		
+		//lock is released automatically when out of scope
+		//std::lock_guard<std::mutex> lock(list_mutex);
+		//list_mutex.lock();
 			toinsert -> value = key;
 			toinsert -> next = NULL;
 			if(head){
@@ -101,10 +114,12 @@ public:
 	}
 	/// remove *key* from the list if it was present; return true if the key
 	/// was removed successfully.
-	bool remove(int key)
+	bool remove(int key) const
 	{
-		bool ret = false;
 		list_mutex.lock();
+		bool ret = false;
+		//list_mutex.lock();
+		//std::lock_guard<std::mutex> lock(list_mutex);
 			Node* temp = head;
 			if(head -> value == key){
 				head = head -> next;
@@ -148,8 +163,10 @@ public:
 	/// return true if *key* is present in the list, false otherwise
 	bool lookup(int key) const
 	{
-		bool ret = false;
 		list_mutex.lock();
+		bool ret = false;
+		//list_mutex.lock();
+		//std::lock_guard<std::mutex> lock(list_mutex);
 		Node* temp = head;
 		while(temp){
 			if(temp -> value == key){
