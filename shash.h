@@ -1,4 +1,35 @@
+//#include "sentinel.h"
+
 #pragma once
+
+struct Node
+	{
+		int value;
+		Node* next;
+	};
+
+
+class sentinel
+{
+	mutable std::mutex sentinel_mutex;
+	Node* head;
+
+public:
+	sentinel() : head(NULL)
+	{}
+	
+	bool test(Node* n){
+		sentinel_mutex.lock();
+			cout << n->value;
+		sentinel_mutex.unlock();
+		return false;
+	}
+	
+};
+
+
+
+
 
 /// TODO: complete this implementation of a thread-safe (concurrent) hash
 ///       table of integers, implemented as an array of linked lists.  In
@@ -6,16 +37,30 @@
 ///       contains the lock, so we can't just reuse the clist implementation
 class shash
 {
+	std::vector<sentinel> buckets;
+	int numBuckets = 0;
+
 public:
-	shash(unsigned _buckets)
-	{}
+	shash(unsigned _buckets) : buckets(_buckets)
+	{
+		numBuckets = (int)_buckets;
+	}
+
+	int hash(int key) const{
+		return key % numBuckets;
+	}
 
 
 	/// insert *key* into the appropriate linked list if it doesn't already
 	/// exist; return true if the key was added successfully.
 	bool insert(int key)
 	{
-		return false;
+		struct Node *toinsert;
+		toinsert = (struct Node*) malloc(sizeof(struct Node));
+		toinsert->value = key;
+
+		int bucket = hash(key);
+		return buckets[bucket].test(toinsert);
 	}
 	/// remove *key* from the appropriate list if it was present; return true
 	/// if the key was removed successfully.
@@ -56,3 +101,5 @@ public:
 		return 0;
 	}
 };
+
+

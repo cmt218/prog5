@@ -23,7 +23,6 @@ public:
 	/// exist; return true if the key was added successfully.
 	
 	int hash(int key) const{
-
 		return key % numBuckets;
 	}
 
