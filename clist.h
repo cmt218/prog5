@@ -28,9 +28,7 @@ class clist
 	mutable std::mutex list_mutex;
 
 public:
-	clist(int)
-	: head(NULL)
-	{}
+	clist(int) : head(NULL){}
 
 	/// insert *key* into the linked list if it doesn't already exist; return
 	/// true if the key was added successfully.
