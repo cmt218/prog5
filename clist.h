@@ -143,6 +143,14 @@ public:
 			prev = temp;
 			temp = temp->next;
 		}
+		//print remove key result
+		// cout << "remove " << key << " result:" << endl;
+		// 	temp = head;
+		// 	while(temp){
+		// 		cout << temp->value << "->";
+		// 		temp = temp -> next;
+		// 	}
+		// 	cout << endl;
 		list_mutex.unlock();
 		return false;
 	
