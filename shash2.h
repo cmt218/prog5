@@ -55,7 +55,7 @@ public:
 
 			buckets[bucket].sentinel_mutex.lock();
 			int key = keys[x];
-			bool ret = false;
+			bool ret = true;
 			struct Node *toinsert;
 			toinsert = (struct Node*) malloc(sizeof(struct Node));
 			toinsert -> value = key;
@@ -69,6 +69,7 @@ public:
 				else if(buckets[bucket].head -> value > key){
 					toinsert -> next = buckets[bucket].head;
 					buckets[bucket].head = toinsert;
+					results[x] = true;
 					ret = true;
 					//size++;
 				}
@@ -88,12 +89,14 @@ public:
 						else if(temp -> next && temp -> next -> value > key){
 							toinsert -> next = temp -> next;
 							temp -> next = toinsert;
+							results[x] = true;
 							ret = true;
 							//size++;
 							break;
 						}
 						else{
 							temp -> next = toinsert;
+							results[x] = true;
 							ret = true;
 							//size++;
 							break;
@@ -104,19 +107,19 @@ public:
 			}
 			else{
 				buckets[bucket].head = toinsert;
+				results[x] = true;
 				ret = true;
 				//size++;
 			}
 			// //print list after insert
-			// cout << "insert " << key << " result:" << endl;
-			// Node* temp = head;
-			// while(temp){
-			// 	cout << temp->value << "->";
-			// 	temp = temp -> next;
-			// }
-			// cout << endl;
+			cout << "insert " << key << " result:" << endl;
+			Node* temp = buckets[bucket].head;
+			while(temp){
+				cout << temp->value << "->";
+				temp = temp -> next;
+			}
+			cout << "RET RESULT " << results[x] << endl;
 
-			results[x] = ret;
 			buckets[bucket].sentinel_mutex.unlock();
 		}
 
