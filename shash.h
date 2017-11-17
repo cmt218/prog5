@@ -189,7 +189,7 @@ public:
 	//This refers to the number of elements in a bucket, not the sentinel node.
 	size_t getBucketSize(size_t bucket) const
 	{
-		int toReturn = 0;
+		size_t toReturn = 0;
 		Node* temp = buckets[bucket].head;
 		while(temp){
 			toReturn ++;
